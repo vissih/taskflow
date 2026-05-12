@@ -13,6 +13,15 @@ import {
   isOverdue,
   daysLeft
 } from "./utils/helper.js";
+import Icon from "./components/common/Icon";
+import Av from "./components/common/Avatar";
+import Modal from "./components/common/Modal";
+import DueChip from "./components/common/DueChip";
+
+import {
+  SBadge,
+  PBadge
+} from "./components/common/Badges";
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 function useToasts() {
@@ -24,26 +33,8 @@ function useToasts() {
   }, []);
   return { toasts, add };
 }
-const Icon = ({ n, style, className = "" }) => <i className={`ti ti-${n} ${className}`} style={style} aria-hidden />;
-function Av({ user, size = "" }) {
-  if (!user) return null;
-  return <div className={`av ${size}`} style={{ background: user.color + "28", color: user.color }} title={user.name}>{user.avatar}</div>;
-}
 const SLBL = { todo: "To Do", "in-progress": "In Progress", done: "Done" };
 const PLBL = { high: "High", medium: "Medium", low: "Low" };
-function SBadge({ s }) { return <span className={`badge ${s}`}>{SLBL[s]}</span>; }
-function PBadge({ p }) { return <span className={`badge p-${p}`}>{PLBL[p]}</span>; }
-function DueChip({ due }) {
-  if (!due) return null;
-  const d = daysLeft(due);
-  const cls = d < 0 ? "overdue" : d <= 3 ? "soon" : "ok";
-  const ico = d < 0 ? "alert-triangle" : "calendar";
-  return <span className={`due-chip ${cls}`}><Icon n={ico} style={{ fontSize: 11 }} />{fmtDate(due)}</span>;
-}
-function Modal({ children, onClose, wide }) {
-  useEffect(() => { const e = ev => ev.key === "Escape" && onClose(); window.addEventListener("keydown", e); return () => window.removeEventListener("keydown", e); }, [onClose]);
-  return <div className="overlay" onClick={e => e.target === e.currentTarget && onClose()}><div className={`modal${wide ? " wide" : ""}`}>{children}</div></div>;
-}
 
 // ── Landing background blobs ───────────────────────────────────────────────
 function LandBg() {
