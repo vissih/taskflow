@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
+import API from "./utils/api.js";
 
 import {
-  SEED_USERS,
   SEED_PROJECTS,
   SEED_TASKS
 } from "./data/seedData.js";
@@ -34,9 +34,9 @@ import SettingsPage from "./pages/SettingsPage.jsx";
 // ── Main App ───────────────────────────────────────────────────────────────
 export default function App() {
   const [currentUser, setCurrentUser] = useState(null);
-  const [users,    setUsers]    = useState(SEED_USERS);
-  const [projects, setProjects] = useState(SEED_PROJECTS);
-  const [tasks,    setTasks]    = useState(SEED_TASKS);
+  const [users, setUsers] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [page, setPage]         = useState("dashboard");
   const [taskModal,    setTaskModal]    = useState(null);
   const [projModal,    setProjModal]    = useState(null);
@@ -52,15 +52,133 @@ export default function App() {
     return () => document.removeEventListener("mousedown", h);
   }, []);
 
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+
+       const res = await API.get("/projects");
+
+       setProjects(res.data);
+
+     } catch (err) {
+
+       console.log(err);
+     }
+    };
+
+    fetchProjects();
+
+  }, []);
+
+  useEffect(() => {
+
+    const fetchTasks = async () => {
+      try {
+
+        const res = await API.get("/tasks");
+
+       setTasks(res.data);
+
+      } catch (err) {
+
+       console.log(err);
+     }
+    };
+
+    fetchTasks();
+
+  }, []);
+
+  useEffect(() => {
+
+   const fetchUsers = async () => {
+
+      try {
+
+        const res = await API.get("/users");
+
+        setUsers(res.data);
+
+      } catch (err) {
+
+       console.log(err);
+     }
+   };
+
+    fetchUsers();
+
+  }, []);
+
   if (!currentUser) return <LandingPage users={users} onLogin={u=>{setCurrentUser(u);toast(`Welcome back, ${u.name.split(" ")[0]}! 🌸`,"success");}} onSignup={u=>{setUsers(us=>[...us,u]);setCurrentUser(u);toast(`Welcome to Taskflow, ${u.name.split(" ")[0]}! 🌱`,"success");}} />;
 
   // ── CRUD helpers ──
-  const saveTask = t => {
-    setTasks(ts => ts.find(x=>x.id===t.id) ? ts.map(x=>x.id===t.id?t:x) : [...ts,t]);
-    toast(tasks.find(x=>x.id===t.id) ? "Task updated ✨" : "Task created 🌱","success");
-    setTaskModal(null);
+  const saveTask = async (t) => {
+
+    try {
+
+     // UPDATE TASK
+     if (t._id) {
+
+       const res = await API.put(
+         `/tasks/${t._id}`,
+          t
+        );
+
+        setTasks(ts =>
+          ts.map(x =>
+            x._id === t._id
+              ? res.data
+              : x
+          )
+        );
+
+        toast("Task updated ✨", "success");
+      }
+
+      // CREATE TASK
+      else {
+
+        const res = await API.post(
+          "/tasks",
+          t
+        );
+
+        setTasks(ts => [
+          res.data,
+          ...ts
+        ]);
+
+        toast("Task created 🌱", "success");
+      }
+
+      setTaskModal(null);
+
+    } catch (err) {
+
+      console.log(err);
+
+     toast("Failed to save task", "error");
+    }
   };
-  const delTask    = id => { setTasks(ts=>ts.filter(t=>t.id!==id)); toast("Task removed","info"); };
+  const delTask = async (id) => {
+
+    try {
+
+      await API.delete(`/tasks/${id}`);
+
+     setTasks(ts =>
+       ts.filter(t => t._id !== id)
+     );
+
+     toast("Task removed", "info");
+
+   } catch (err) {
+
+     console.log(err);
+
+     toast("Failed to delete task", "error");
+   }
+  };
   const chgStatus  = (id,status) => { setTasks(ts=>ts.map(t=>t.id===id?{...t,status}:t)); toast("Status updated ✅","success"); };
   const saveProj   = p => { setProjects(ps=>ps.find(x=>x.id===p.id)?ps.map(x=>x.id===p.id?p:x):[...ps,p]); toast("Project saved 🗂","success"); setProjModal(null); };
   const delProj    = id => { setProjects(ps=>ps.filter(p=>p.id!==id)); setTasks(ts=>ts.filter(t=>t.projectId!==id)); toast("Project deleted","info"); };

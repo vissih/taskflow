@@ -3,7 +3,7 @@ import { useState } from "react";
 import Icon from "../components/common/Icon.jsx";
 import LandBg from "../components/layout/LandBg.jsx";
 
-import { uid } from "../utils/helper.js";
+import API from "../utils/api.js";
 
 export default function LandingPage({ users, onLogin, onSignup }) {
   const [mode, setMode] = useState(null); // null=hero, "login", "signup"
@@ -11,22 +11,52 @@ export default function LandingPage({ users, onLogin, onSignup }) {
   const [err, setErr] = useState("");
   const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
 
-  const submit = () => {
+const submit = async () => {
+  try {
     setErr("");
-    if (mode === "login") {
-      const u = users.find(x => x.email.toLowerCase() === form.email.toLowerCase());
-      if (!u) { setErr("No account found with that email."); return; }
-      onLogin(u);
-    } else {
-      if (!form.name.trim()) { setErr("Please enter your name."); return; }
-      if (!form.email.trim()) { setErr("Please enter your email."); return; }
-      if (users.find(x => x.email.toLowerCase() === form.email.toLowerCase())) { setErr("Email already registered."); return; }
-      const initials = form.name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
-      const colors = ["#7bb56e","#c4a35a","#e07b6a","#7a9dc4","#a57ac4","#c4827a"];
-      onSignup({ id: uid(), name: form.name, email: form.email, role: form.role, avatar: initials, color: colors[Math.floor(Math.random() * colors.length)] });
-    }
-  };
 
+    // LOGIN
+    if (mode === "login") {
+
+      const res = await API.post("/auth/login", {
+        email: form.email,
+        password: form.password
+      });
+
+      localStorage.setItem("token", res.data.token);
+
+      onLogin(res.data.user);
+    }
+
+    // SIGNUP
+    else {
+
+      if (!form.name.trim()) {
+        setErr("Please enter your name.");
+        return;
+      }
+
+      const res = await API.post("/auth/signup", {
+        name: form.name,
+        email: form.email,
+        password: form.password
+      });
+
+      localStorage.setItem("token", res.data.token);
+
+      onSignup(res.data.user);
+    }
+
+  } catch (err) {
+
+    console.log(err);
+
+    setErr(
+      err.response?.data?.message ||
+      "Something went wrong"
+    );
+  }
+};
   const features = [
     { icon: "checklist",      label: "Smart Task Tracking" },
     { icon: "users",          label: "Team Collaboration" },
