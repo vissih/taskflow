@@ -27,7 +27,7 @@ export default function ProjectsPage({ projects, tasks, users, currentUser, onNe
           const te    = pts.reduce((s,t)=>s+(+t.timeEstimate||0),0);
           const tl    = pts.reduce((s,t)=>s+(+t.timeLogged||0),0);
           return (
-            <div key={p.id} className={`proj-card ai s${Math.min(i+1,4)}`} style={{ background:`linear-gradient(135deg, ${p.color}25, ${p.color}08)`, cursor:canEd?"pointer":"default" }} onClick={()=>canEd&&onEdit(p)}>
+            <div key={p._id} className={`proj-card ai s${Math.min(i+1,4)}`} style={{ background:`linear-gradient(135deg, ${p.color}25, ${p.color}08)`, cursor:canEd?"pointer":"default" }} onClick={()=>canEd&&onEdit(p)}>
               <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:14 }}>
                 <div style={{ width:42, height:42, borderRadius:14, background:p.color+"50", display:"grid", placeItems:"center", fontSize:20, boxShadow:`0 2px 10px ${p.color}60` }}>
                   🗂
@@ -48,7 +48,7 @@ export default function ProjectsPage({ projects, tasks, users, currentUser, onNe
                 <div className="progress"><div className="progress-fill" style={{ width:`${Math.min(100,Math.round(tl/te*100))}%`, background:"var(--peach-d)", height:4 }} /></div>
               </div>}
               <div className="proj-foot">
-                <div className="av-stack">{mems.slice(0,4).map(u=><Av key={u.id} user={u} />)}{mems.length>4&&<div className="av" style={{ background:"var(--bg3)", color:"var(--text3)", fontSize:10 }}>+{mems.length-4}</div>}</div>
+                <div className="av-stack">{mems.slice(0,4).map(u=><Av key={u._id} user={u} />)}{mems.length>4&&<div className="av" style={{ background:"var(--bg3)", color:"var(--text3)", fontSize:10 }}>+{mems.length-4}</div>}</div>
                 <div style={{ display:"flex", gap:10, fontSize:12, color:"var(--text2)", fontWeight:600 }}>
                   <span title="Tasks">📋 {pts.length}</span>
                   <span title="In Progress" style={{ color:"#b8a020" }}>⏳ {inp}</span>

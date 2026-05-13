@@ -81,7 +81,7 @@ export default function TasksPage({ tasks, projects, users, currentUser, onNew, 
                 const d = daysLeft(t.due);
                 const te = +t.timeEstimate||0, tl = +t.timeLogged||0;
                 return (
-                  <tr key={t.id} onClick={()=>canEdit(t)&&onSelect(t)} style={{ cursor: canEdit(t)?"pointer":"default" }}>
+                  <tr key={t._id} onClick={()=>canEdit(t)&&onSelect(t)} style={{ cursor: canEdit(t)?"pointer":"default" }}>
                     <td>
                       <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                         <span className={`prio-dot ${t.priority}`} />
@@ -137,7 +137,7 @@ export default function TasksPage({ tasks, projects, users, currentUser, onNew, 
                   const assignee = users.find(u=>u.id===t.assigneeId);
                   const project  = projects.find(p=>p.id===t.projectId);
                   return (
-                    <div key={t.id} className="task-card" onClick={()=>canEdit(t)&&onSelect(t)}>
+                    <div key={t._id} className="task-card" onClick={()=>canEdit(t)&&onSelect(t)}>
                       <div style={{ display:"flex", alignItems:"flex-start", gap:8 }}>
                         <span className={`prio-dot ${t.priority}`} style={{ marginTop:5 }} />
                         <div className="task-title">{t.title}</div>

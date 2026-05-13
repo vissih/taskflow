@@ -180,8 +180,77 @@ export default function App() {
    }
   };
   const chgStatus  = (id,status) => { setTasks(ts=>ts.map(t=>t.id===id?{...t,status}:t)); toast("Status updated ✅","success"); };
-  const saveProj   = p => { setProjects(ps=>ps.find(x=>x.id===p.id)?ps.map(x=>x.id===p.id?p:x):[...ps,p]); toast("Project saved 🗂","success"); setProjModal(null); };
-  const delProj    = id => { setProjects(ps=>ps.filter(p=>p.id!==id)); setTasks(ts=>ts.filter(t=>t.projectId!==id)); toast("Project deleted","info"); };
+  const saveProj = async (p) => {
+
+    try {
+
+     // UPDATE PROJECT
+     if (p._id) {
+
+       const res = await API.put(
+          `/projects/${p._id}`,
+          p
+       );
+
+       setProjects(ps =>
+         ps.map(x =>
+           x._id === p._id
+             ? res.data
+             : x
+         )
+       );
+
+       toast("Project updated ✨", "success");
+      }
+
+      // CREATE PROJECT
+     else {
+
+        const res = await API.post(
+          "/projects",
+         p
+       );
+
+       setProjects(ps => [
+         res.data,
+         ...ps
+        ]);
+
+       toast("Project created 🌱", "success");
+      }
+
+      setProjModal(null);
+
+   } catch (err) {
+
+      console.log(err);
+
+      toast("Failed to save project", "error");
+   }
+  };
+  const delProj = async (id) => {
+
+   try {
+
+      await API.delete(`/projects/${id}`);
+
+     setProjects(ps =>
+       ps.filter(p => p._id !== id)
+      );
+
+     setTasks(ts =>
+       ts.filter(t => t.projectId !== id)
+     );
+
+      toast("Project deleted", "info");
+
+    } catch (err) {
+
+     console.log(err);
+
+     toast("Failed to delete project", "error");
+    }
+  };
   const invMember  = u => { setUsers(us=>[...us,u]); toast(`${u.name} invited 🌸`,"success"); setMemberModal(false); };
   const remMember  = id => { setUsers(us=>us.filter(u=>u.id!==id)); toast("Member removed","info"); };
   const updateUser = form => { setCurrentUser(u=>({...u,...form})); setUsers(us=>us.map(u=>u.id===currentUser.id?{...u,...form}:u)); toast("Profile updated ✨","success"); };
@@ -226,7 +295,7 @@ export default function App() {
                 <div className="npanel">
                   <div className="npanel-title">🔔 Notifications</div>
                   {overdue.slice(0,5).map(t=>(
-                    <div key={t.id} className="nitem" onClick={()=>{setTaskModal(t);setNotifOpen(false);}}>
+                    <div key={t._id} className="nitem" onClick={()=>{setTaskModal(t);setNotifOpen(false);}}>
                       <p>⚠️ <strong>{t.title}</strong> is overdue</p>
                       <small>{fmtDate(t.due)} {t.due.includes("T")?`· ${fmtTime(t.due)}`:""}</small>
                     </div>

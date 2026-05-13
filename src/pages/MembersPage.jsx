@@ -26,7 +26,7 @@ export default function MembersPage({ users, tasks, projects, currentUser, onInv
           const te   = ut.reduce((s,t)=>s+(+t.timeEstimate||0),0);
           const tl   = ut.reduce((s,t)=>s+(+t.timeLogged||0),0);
           return (
-            <div key={u.id} className={`mem-card ai s${Math.min(i+1,4)}`} onClick={()=>setSelected(selected?.id===u.id?null:u)} style={{ cursor:"pointer", border: selected?.id===u.id ? "1.5px solid var(--green-d)" : "" }}>
+            <div key={u._id} className={`mem-card ai s${Math.min(i+1,4)}`} onClick={()=>setSelected(selected?.id===u.id?null:u)} style={{ cursor:"pointer", border: selected?.id===u.id ? "1.5px solid var(--green-d)" : "" }}>
               <Av user={u} size="xl" />
               <div>
                 <div className="mem-name">{u.name}</div>
@@ -51,7 +51,7 @@ export default function MembersPage({ users, tasks, projects, currentUser, onInv
                 ⏱ {tl}h logged / {te}h est.
               </div>}
               <div style={{ fontSize:11, color:"var(--text3)" }}>
-                {myProjs.map(p=><span key={p.id} style={{ display:"inline-flex", alignItems:"center", gap:3, marginRight:6 }}><div style={{ width:6,height:6,borderRadius:"50%",background:p.color }} />{p.name}</span>)}
+                {myProjs.map(p=><span key={p._id} style={{ display:"inline-flex", alignItems:"center", gap:3, marginRight:6 }}><div style={{ width:6,height:6,borderRadius:"50%",background:p.color }} />{p.name}</span>)}
               </div>
               {currentUser.role==="admin" && u.id!==currentUser.id && (
                 <button className="btn danger xs" onClick={e=>{e.stopPropagation();onRemove(u.id);}}><Icon n="user-minus" style={{ fontSize:12 }} />Remove</button>

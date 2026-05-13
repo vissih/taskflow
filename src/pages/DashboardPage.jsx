@@ -70,7 +70,7 @@ export default function Dashboard({ tasks, projects, users, currentUser, onNewTa
             const assignee = users.find(u=>u.id===t.assigneeId);
             const project  = projects.find(p=>p.id===t.projectId);
             return (
-              <div key={t.id} onClick={() => onSelectTask(t)} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 12px", background:"var(--bg2)", borderRadius:10, cursor:"pointer", marginBottom:8, border:"1px solid var(--border)", transition:"all .15s" }}
+              <div key={t._id} onClick={() => onSelectTask(t)} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 12px", background:"var(--bg2)", borderRadius:10, cursor:"pointer", marginBottom:8, border:"1px solid var(--border)", transition:"all .15s" }}
                 onMouseEnter={e=>e.currentTarget.style.background="var(--bg3)"}
                 onMouseLeave={e=>e.currentTarget.style.background="var(--bg2)"}>
                 <span className={`prio-dot ${t.priority}`} />
@@ -92,7 +92,7 @@ export default function Dashboard({ tasks, projects, users, currentUser, onNewTa
             const done = pts.filter(t=>t.status==="done").length;
             const pct  = pts.length ? Math.round(done/pts.length*100) : 0;
             return (
-              <div key={p.id} style={{ marginBottom:14 }}>
+              <div key={p._id} style={{ marginBottom:14 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
                   <div style={{ width:10, height:10, borderRadius:"50%", background:p.color, boxShadow:`0 0 0 3px ${p.color}40` }} />
                   <span style={{ fontSize:13, fontWeight:700, flex:1 }}>{p.name}</span>
@@ -108,7 +108,7 @@ export default function Dashboard({ tasks, projects, users, currentUser, onNewTa
             const ut = tasks.filter(t=>t.assigneeId===u.id);
             const dn = ut.filter(t=>t.status==="done").length;
             return (
-              <div key={u.id} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:8 }}>
+              <div key={u._id} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:8 }}>
                 <Av user={u} />
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ fontSize:12, fontWeight:700 }}>{u.name}</div>

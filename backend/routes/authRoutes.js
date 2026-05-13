@@ -13,7 +13,8 @@ router.post("/signup", async (req, res) => {
     const {
       name,
       email,
-      password
+      password,
+      role
     } = req.body;
 
     // check existing user
@@ -33,7 +34,7 @@ router.post("/signup", async (req, res) => {
       name,
       email,
       password: hashed,
-      role: "member"
+      role
     });
 
     // create token

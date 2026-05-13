@@ -25,6 +25,27 @@ router.get("/", async (req, res) => {
   }
 });
 
+// ── UPDATE PROJECT ─────────────────────
+router.put("/:id", async (req, res) => {
+  try {
+
+    const project = await Project.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    res.json(project);
+
+  } catch (err) {
+
+    console.log(err);
+
+    res.status(500).json({
+      message: "Server error"
+    });
+  }
+});
 
 // ── CREATE PROJECT ─────────────────────
 router.post("/", async (req, res) => {

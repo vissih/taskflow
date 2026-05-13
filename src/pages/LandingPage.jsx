@@ -39,7 +39,8 @@ const submit = async () => {
       const res = await API.post("/auth/signup", {
         name: form.name,
         email: form.email,
-        password: form.password
+        password: form.password,
+        role: form.role
       });
 
       localStorage.setItem("token", res.data.token);
@@ -100,16 +101,6 @@ const submit = async () => {
                 <Icon n="login" /> Sign in
               </button>
             </div>
-            {/* Mini preview card */}
-            <div style={{ marginTop: 48, background: "rgba(255,255,255,0.75)", backdropFilter: "blur(12px)", border: "1.5px solid var(--border2)", borderRadius: "var(--r3)", padding: "20px 28px", display: "flex", gap: 32, boxShadow: "var(--shadow2)", animation: "slideUp .5s ease .2s both", flexWrap: "wrap", justifyContent: "center" }}>
-              {[{ n: "12", l: "Projects", ico: "folder", c: "#A3DC9A" }, { n: "48", l: "Tasks Done", ico: "circle-check", c: "#DEE791" }, { n: "8", l: "Members", ico: "users", c: "#FFD6BA" }, { n: "99%", l: "Uptime", ico: "shield-check", c: "#FFF9BD" }].map(s => (
-                <div key={s.l} style={{ textAlign: "center" }}>
-                  <div style={{ width: 36, height: 36, borderRadius: "50%", background: s.c, display: "grid", placeItems: "center", margin: "0 auto 8px", fontSize: 16 }}><Icon n={s.ico} /></div>
-                  <div style={{ fontSize: 20, fontWeight: 800, color: "var(--text)" }}>{s.n}</div>
-                  <div style={{ fontSize: 11, color: "var(--text3)", fontWeight: 600 }}>{s.l}</div>
-                </div>
-              ))}
-            </div>
           </div>
           <div className="land-features">
             {features.map(f => (
@@ -130,9 +121,15 @@ const submit = async () => {
             </div>
             {mode === "login" && (
               <div className="auth-demo">
-                <strong style={{ color: "var(--green-d)" }}>🌸 Demo accounts:</strong><br />
-                Admin: arjun@bloom.in &nbsp;|&nbsp; Members: priya@bloom.in, rohan@bloom.in, kavya@bloom.in<br />
-                <em style={{ color: "var(--text3)" }}>(any password works)</em>
+                <strong style={{ color: "var(--green-d)" }}>
+                   🌸 Welcome to Taskflow
+                </strong>
+                 <br />
+
+                   Your cozy workspace for teamwork ✨
+
+                 <br />
+
               </div>
             )}
             {mode === "signup" && <div className="fg"><label className="flbl">Full Name</label><input className="finput" value={form.name} onChange={set("name")} placeholder="Riya Sharma" /></div>}
