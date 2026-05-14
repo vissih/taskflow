@@ -109,6 +109,19 @@ export default function App() {
 
   }, []);
 
+  useEffect(() => {
+
+    const savedUser = localStorage.getItem("user");
+    
+    if (savedUser) {
+
+      setCurrentUser(
+        JSON.parse(savedUser)
+     );
+   }
+
+  }, []);
+
   if (!currentUser) return <LandingPage users={users} onLogin={u=>{setCurrentUser(u);toast(`Welcome back, ${u.name.split(" ")[0]}! 🌸`,"success");}} onSignup={u=>{setUsers(us=>[...us,u]);setCurrentUser(u);toast(`Welcome to Taskflow, ${u.name.split(" ")[0]}! 🌱`,"success");}} />;
 
   // ── CRUD helpers ──
@@ -343,7 +356,7 @@ export default function App() {
             <div className={`nav-item ${page==="settings"?"active":""}`} onClick={()=>setPage("settings")}>
               <Icon n="settings" />Settings
             </div>
-            <div className="nav-item" style={{ color:"#c0522a" }} onClick={()=>{setCurrentUser(null);setPage("dashboard");toast("Signed out 👋","info");}}>
+            <div className="nav-item" style={{ color:"#c0522a" }} onClick={()=>{localStorage.clear();setCurrentUser(null);setPage("dashboard");toast("Signed out 👋","info");}}>
               <Icon n="logout" />Sign Out
             </div>
           </div>
@@ -355,7 +368,7 @@ export default function App() {
           {page==="tasks"     && <TasksPage tasks={tasks} projects={projects} users={users} currentUser={currentUser} onNew={()=>setTaskModal({})} onSelect={t=>setTaskModal(t)} onStatusChange={chgStatus} />}
           {page==="projects"  && <ProjectsPage projects={projects} tasks={tasks} users={users} currentUser={currentUser} onNew={()=>setProjModal({})} onEdit={p=>setProjModal(p)} />}
           {page==="members"   && <MembersPage users={users} tasks={tasks} projects={projects} currentUser={currentUser} onInvite={()=>setMemberModal(true)} onRemove={remMember} onShowPerms={()=>setPermsModal(true)} />}
-          {page==="settings"  && <SettingsPage currentUser={currentUser} onUpdateUser={updateUser} onLogout={()=>{setCurrentUser(null);setPage("dashboard");toast("Signed out 👋","info");}} users={users} />}
+          {page==="settings"  && <SettingsPage currentUser={currentUser} onUpdateUser={updateUser} onLogout={()=>{localStorage.clear();setCurrentUser(null);setPage("dashboard");toast("Signed out 👋","info");}} users={users} />}
         </main>
       </div>
 

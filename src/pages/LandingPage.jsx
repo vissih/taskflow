@@ -24,6 +24,7 @@ const submit = async () => {
       });
 
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
       onLogin(res.data.user);
     }
@@ -44,6 +45,7 @@ const submit = async () => {
       });
 
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
 
       onSignup(res.data.user);
     }
